@@ -19,6 +19,16 @@ export default function CreateUser(app: FastifyInstance) {
     const { name, email, password, genre, age, created_at, updated_at } =
       createUserBodySchema.parse(request.body);
 
+      let sessionId = request.cookies.sessionId
+
+      if(!sessionId) {
+        sessionId = randomUUID()
+        reply.setCookie('sessionId', sessionId,{
+          path: '/',
+          maxAge: 60 * 60
+        })
+      }
+
     const emailExists = await knex("users").where({ email }).first();
 
     if (emailExists) {
@@ -27,7 +37,7 @@ export default function CreateUser(app: FastifyInstance) {
 
     const passwordHash = await hash(password, 10)
 
-    const user = await knex("users").insert({
+    await knex("users").insert({
       id: randomUUID(),
       name,
       email,
@@ -36,10 +46,21 @@ export default function CreateUser(app: FastifyInstance) {
       age,
       created_at,
       updated_at,
+      session_id: sessionId
     });
+
 
     return reply
       .status(201)
-      .send({ message: "User created successfully", user });
+      .send({ message: "User created successfully"});
   });
+
+  app.get('/users', async (request, reply) => {
+    const cookie = request.cookies
+
+    const users = await knex('users').select('*')
+
+    return reply.send(users)
+
+  })
 }
