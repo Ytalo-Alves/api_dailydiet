@@ -36,7 +36,7 @@ export default function createSnack(app: FastifyInstance) {
         updated_at,
       });
 
-      return reply.status(201).send({ success: "Snack creating successful" });
+      return reply.status(201).send({ success: "Snack creating successful"});
     }
   );
 

@@ -35,7 +35,11 @@ export default function CreateUser(app: FastifyInstance) {
       return reply.status(400).send({ error: "email is already in use" });
     }
 
-    const passwordHash = await hash(password, 10)
+    if (!password) {
+      throw new Error("Password cannot be null");
+    }
+    const passwordHash = hash(password, 10)
+
 
     await knex("users").insert({
       id: randomUUID(),

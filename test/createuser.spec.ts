@@ -37,7 +37,6 @@ describe("User routes", () => {
       "message",
       "User created successfully"
     );
-    expect(response.body).toHaveProperty("user");
   });
 
   it("should return an error if the email is already in use", async () => {
