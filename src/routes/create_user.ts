@@ -56,7 +56,6 @@ export default function CreateUser(app: FastifyInstance) {
   });
 
   app.get('/users', async (request, reply) => {
-    const cookie = request.cookies
 
     const users = await knex('users').select('*')
 
